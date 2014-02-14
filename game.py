@@ -95,7 +95,9 @@ class Game(object):
 		self.selection = None
 		self.ready_for_next_round = set()
 		self.max_score = max_score
+		self.n_img = n_img
 		self.player_images = {}
+		self.images_selected = []
 
 	def whose_turn(self):
 		return self.players[self.round_index % len(self.players)]
@@ -129,26 +131,32 @@ class Game(object):
 				'already_answered': self.selection['answers'].keys(),
 				'players': self.players
 			}
-		if self.state == Game.VOTING:
+		if self.state == Game.VOTING:			
 			return {
 				'state': self.state,
 				'describing_player': self.selection['selection']['player'],
 				'description': self.selection['selection']['description'],
 				'already_voted': self.selection['votes'].keys(),
 				'players': self.players,
+				'images': self.images_selected
 			}
-		if self.state == Game.VOTING_DONE:
-			new_image = self.img_service.get()
-			self.player_images[player].add(new_image)
-			return {
-				'state': self.state,
-				'new_image': new_image,
+		if self.state == Game.VOTING_DONE:			
+			resp = {
+				'state': self.state,				
 				'selection': self.selection,
 				'round_score': self.scorer.round_score,
 				'total_score': self.scorer.scores,
 				'players': self.players,
 				'ready_for_next_round': list(self.ready_for_next_round),
+				'images': self.images_selected,
+				'correct_image': self.selection['selection']['image'],
+				'votes': self.selection['votes']
 			}
+			if len(self.player_images[player]) < self.n_img:
+				new_image = self.img_service.get()
+				self.player_images[player].add(new_image)
+				resp['new_image'] = new_image
+			return resp
 		if self.state == Game.GAME_OVER:
 			return {
 				'state': self.state,
@@ -199,13 +207,14 @@ class Game(object):
 		self.player_images[player].remove(image)
 		if len(self.selection['answers']) == len(self.players) - 1:
 			# all players have answered
+			self.images_selected = [self.selection['selection']['image']] + self.selection['answers'].keys()
+			random.shuffle(self.images_selected)
 			self.state = Game.VOTING
-
 		return True, 'Success'
 
 	def vote(self, player, image):
 		if self.state != Game.VOTING:
-			return False, 'Cannot vote in state: %s' % self.state		
+			return False, 'Cannot vote in state: %s' % self.state
 		self.selection['votes'][player] = image
 		if len(self.selection['votes']) == len(self.players) - 1:
 			# all players have voited already
@@ -228,7 +237,6 @@ class Game(object):
 			# allplayers are ready
 			self.state = Game.START_ROUND
 			self.round_index += 1
-		# some players not ready yet
 		return True, 'Success'
 
 	

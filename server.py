@@ -45,7 +45,7 @@ def get_state():
 	g = game.GameRegistry.get().lookup_game(obj['game_id'])
 	state_obj = g.get_state(obj['player'])
 	print state_obj
-	return {'status': 'ok', 'state': state_obj}
+	return state_obj
 
 @post('/end_joining')
 def end_joining():
@@ -53,10 +53,10 @@ def end_joining():
 	print body
 	obj = json.loads(body)
 	g = game.GameRegistry.get().lookup_game(obj['game_id'])
-	success, message = g.close_joining(obj['player'])
+	g.close_joining(obj['player'])
 	return {
-		'status': 'ok' if success else 'error',
-		'message': message
+		'status': 'ok',
+		'message': 'geme ready to start'
 	}
 
 @post('/get_images')
@@ -118,6 +118,10 @@ def ready_next():
 		'status': 'ok' if success else 'error',
 		'message': message
 	}
+
+@get('/list_games')
+def list_games():
+	return {'status': 'ok', 'games': game.GameRegistry.get().games.keys()}
 
 @route('/static/<filename>')
 def server_static(filename):
