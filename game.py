@@ -49,8 +49,25 @@ class FlickrFeedImageService(object):
 		return self.images.popleft()
 
 
-class ImgurImageService(object):
-	pass
+class CatImageService(object):
+
+	def __init__(self, refill_threshold=10):
+		self.service_url = 'http://thecatapi.com/api/images/get?format=html&type=gif&size=small'
+		self.images = deque()
+		self.load_images()
+		self.refill_threshold = refill_threshold
+
+	def load_images(self):
+		for _ in range(20):
+			response = urllib.urlopen(self.service_url).read()
+			img_url = response[response.index('src="') + 5 : response.rindex('"')]
+			self.images.append(img_url)
+
+	def get(self):
+		if len(self.images) < self.refill_threshold:
+			self.load_images()
+		return self.images.popleft()
+
 
 
 class GameRegistry(object):
