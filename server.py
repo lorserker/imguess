@@ -124,6 +124,15 @@ def list_games():
 
 @route('/static/<filename>')
 def server_static(filename):
-    return static_file(filename, root='./static')
+	return static_file(filename, root='./static')
+
+@get('/test_images')
+def test_images():
+	# imgsrv = game.CatImageService()
+	imgsrv = game.FlickrFeedImageService()
+	results = []
+	for _ in range(20):
+		results.append(imgsrv.get())
+	return {'status': 'ok', 'response':results}
 
 run(host='localhost', port=8080)
