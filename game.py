@@ -63,7 +63,7 @@ class GameRegistry(object):
 			cls.registry = cls()
 		return cls.registry
 
-	def __init__(object):
+	def __init__(self):
 		self.games = {}
 
 	def register(self, id, g):
@@ -71,6 +71,9 @@ class GameRegistry(object):
 
 	def remove(self, id):
 		del self.games[id]
+
+	def lookup_game(self, id):
+		return self.games.get(id)
 
 
 class Game(object):
@@ -160,6 +163,7 @@ class Game(object):
 		for _ in range(self.n_img):
 			images.append(self.img_service.get())		
 		self.player_images[player] = set(images)
+		return images
 
 
 	def join(self, player):
