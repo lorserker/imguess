@@ -69,7 +69,6 @@ class CatImageService(object):
 		return self.images.popleft()
 
 
-
 class GameRegistry(object):
 
 	registry = None
