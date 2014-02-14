@@ -11,8 +11,7 @@ def index():
 @get('/create/<host>')
 def create(host):	
 	game_id = game.get_new_game_id()
-	g = game.Game(game_id, host, game.FlickrFeedImageService(), 32, 6)
-	game.GameRegistry.get().register(game_id, g)
+	g = game.Game(game_id, host, game.FlickrFeedImageService(), 32, 6)	
 	print game.GameRegistry.get().games.keys()
 	return {'status':'ok', 'game_id':game_id}
 

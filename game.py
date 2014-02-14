@@ -26,6 +26,16 @@ class FakeImageService(object):
 	def get(self):
 		return random.choice(self.images)
 
+class TestImageService(object):
+
+	def __init__(self):
+		self.i = 0
+
+	def get(self):
+		img_url = 'img_%d' % self.i
+		self.i += 1
+		return img_url
+
 
 class FlickrFeedImageService(object):
 	
@@ -102,7 +112,7 @@ class Game(object):
 	GAME_OVER = 'game_over'
 
 	def __init__(self, id, hostplayer, img_service, max_score=32, n_img=6):
-		self.id = id
+		self.id = id		
 		self.hostplayer = hostplayer
 		self.players = [hostplayer]
 		self.round_index = 0
@@ -114,6 +124,8 @@ class Game(object):
 		self.n_img = n_img
 		self.player_images = {}
 		self.images_selected = []
+
+		GameRegistry.get().register(self.id, self)
 
 	def whose_turn(self):
 		return self.players[self.round_index % len(self.players)]
@@ -196,6 +208,7 @@ class Game(object):
 		if player in self.players:
 			return False, 'Player already joined'
 		self.players.append(player)
+		self.player_images[player] = set()
 		return True, 'Success'
 
 	def select(self, player, image, description):
@@ -276,7 +289,8 @@ class Scorer(object):
 		# assign scores
 		for player, image in selection['votes'].items():
 			if image == correct_image:
-				correct_voters.add(player)
+				round_score[player] += 1
+				correct_voters.add(player)				
 			else:
 				player_voted = img_to_player[image]
 				round_score[player_voted] += 1
