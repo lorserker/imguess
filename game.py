@@ -236,7 +236,7 @@ class Game(object):
 		self.player_images[player].remove(image)
 		if len(self.selection['answers']) == len(self.players) - 1:
 			# all players have answered
-			self.images_selected = [self.selection['selection']['image']] + self.selection['answers'].keys()
+			self.images_selected = [self.selection['selection']['image']] + self.selection['answers'].values()
 			random.shuffle(self.images_selected)
 			self.state = Game.VOTING
 		return True, 'Success'
@@ -264,6 +264,7 @@ class Game(object):
 		self.ready_for_next_round.add(player)
 		if len(self.ready_for_next_round) == len(self.players):
 			# allplayers are ready
+			self.ready_for_next_round = set()
 			self.state = Game.START_ROUND
 			self.round_index += 1
 		return True, 'Success'
