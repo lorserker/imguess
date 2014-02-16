@@ -1,7 +1,13 @@
 import json
+
 import game
 
-from bottle import route, post, get, run, request, static_file
+from bottle import route, post, get, run, request, static_file, template
+
+
+@route('/')
+def play():
+	return template('view/play.html')
 
 @route('/hello')
 def index():
