@@ -1,4 +1,5 @@
 import json
+import os
 
 import game
 
@@ -141,4 +142,5 @@ def test_images():
 		results.append(imgsrv.get())
 	return {'status': 'ok', 'response':results}
 
-run(host='localhost', port=8080)
+#run(host='localhost', port=8080)
+run(server='gunicorn', host='0.0.0.0', port=os.environ.get("PORT", 5000), workers=1)
