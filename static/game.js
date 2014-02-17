@@ -107,6 +107,7 @@ function game_init () {
 				setUpJoining(currentStateData);
 			}
 			refreshPlayerList(currentStateData);
+			refreshStartButtonState(currentStateData);
 		} else if (currentState === 'start_round') {
 			if (currentState !== lastState) {
 				setUpStartRound(currentStateData);
@@ -131,11 +132,21 @@ function game_init () {
 		lastState = currentState;
 	}
 
-	function refreshPlayerList (stateData) {
-		var ul = $('#joining ul'),
-			startButton = $('#start-btn');
-		ul.empty();
+	function refreshStartButtonState(stateData) {
+		var startButton = $('#start-btn');
 
+		if (!playerIsGameHost) {
+			startButton.attr('disabled', 'disabled').html('Waiting for host to start...');
+		} else if (stateData.players.length < 3) {
+			startButton.attr('disabled', 'disabled').html('Need at least 3 players to start');
+		} else {
+			startButton.removeAttr('disabled').html('Start Game');
+		}
+	}
+
+	function refreshPlayerList (stateData) {
+		var ul = $('#joining ul');
+		ul.empty();
 
 		if (ul) {
 			$.each(stateData.players, function (i, el) {
@@ -157,14 +168,6 @@ function game_init () {
 		$('#share-link').click(function () {
 			$(this).select();
 		}).click();
-
-		if (!playerIsGameHost) {
-			$('#start-btn').attr('disabled', 'disabled').html('Waiting for host to start...');
-		} else if (stateData.players.length < 3) {
-			startButton.attr('disabled', 'disabled').html('Need at least 3 players to start');
-		} else {
-			startButton.removeAttr('disabled').html('Start Game');
-		}
 
 		startButton = $('#start-btn');
 		if (startButton) {
