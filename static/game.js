@@ -133,14 +133,8 @@ function game_init () {
 
 	function refreshPlayerList (stateData) {
 		var ul = $('#joining ul'),
-			startButton = $('#star-btn');
+			startButton = $('#start-btn');
 		ul.empty();
-
-		if (stateData.players.length < 3) {
-			startButton.attr('disabled', 'disabled').html('Need more players...');
-		} else {
-			startButton.removeAttr('disabled').html('Start Game');
-		}
 
 
 		if (ul) {
@@ -160,13 +154,17 @@ function game_init () {
 
 		$('.container').prepend('<button id="start-btn" class="btn">Start Game</button>');
 
-		if (!playerIsGameHost) {
-			$('#start-btn').attr('disabled', 'disabled').html('Waiting for host...');
-		}
-
 		$('#share-link').click(function () {
 			$(this).select();
 		}).click();
+
+		if (!playerIsGameHost) {
+			$('#start-btn').attr('disabled', 'disabled').html('Waiting for host to start...');
+		} else if (stateData.players.length < 3) {
+			startButton.attr('disabled', 'disabled').html('Need at least 3 players to start');
+		} else {
+			startButton.removeAttr('disabled').html('Start Game');
+		}
 
 		startButton = $('#start-btn');
 		if (startButton) {
