@@ -448,7 +448,7 @@ function game_init () {
 
 			if (el == stateData.correct_image) {
 				image_overlay.addClass('selected');
-				image_overlay.attr('style', 'background-color:' + playerColors[stateData.selection.selection.player] + ';')
+				image_overlay.attr('style', 'background-color:' + playerColors[stateData.selection.selection.player] + ';');
 			}
 
 			image_overlay.append(img);
