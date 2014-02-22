@@ -1,4 +1,4 @@
-function game_init () {
+(function () {
 	var serverLocation = window.location.origin,
 		player = null,
 		playerColors = null,
@@ -10,9 +10,7 @@ function game_init () {
 		LOOP_TIMEOUT = 1000,
 		running = true;
 
-	initLogin();
-
-	function initLogin() {
+	function init() {
 		var html =
 			'<div class="play-game">' +
 				'<label for="player-name-field" id="player-name-label">Chose Your Name</label>' +
@@ -558,4 +556,6 @@ function game_init () {
 		}
 		console.log('Query variable %s not found', variable);
 	}
-}
+
+	$(document).ready(init);
+})();
