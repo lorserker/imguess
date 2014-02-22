@@ -32,6 +32,8 @@
 				disableButton(target);
 				player = playerNameField.val();
 				setUpGame();
+			} else {
+				playerNameField.focus();
 			}
 		});
 
